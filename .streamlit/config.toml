@@ -1,0 +1,36 @@
+# Streamlit theme for dashboard.py
+# Streamlit reads its configuration from TOML (not YAML) at .streamlit/config.toml
+
+[theme]
+base = "dark"
+
+# Colors
+primaryColor = "#5B8DEF"
+backgroundColor = "#0B1020"
+secondaryBackgroundColor = "#121A2E"
+textColor = "#E6EAF2"
+borderColor = "#26304A"
+linkColor = "#7FB0FF"
+
+# Typography (Google Fonts)
+font = "Plus Jakarta Sans:https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+headingFont = "Plus Jakarta Sans:https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+codeFont = "JetBrains Mono:https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap"
+baseFontSize = 15
+headingFontWeights = [700, 600, 600, 600, 600, 600]
+metricValueFontSize = "1.7rem"
+
+# Shape
+baseRadius = "0.6rem"
+showWidgetBorder = true
+
+[theme.sidebar]
+backgroundColor = "#0F172A"
+secondaryBackgroundColor = "#16203A"
+borderColor = "#26304A"
+
+[server]
+headless = true
+
+[browser]
+gatherUsageStats = false

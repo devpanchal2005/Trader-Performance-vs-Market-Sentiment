@@ -22,31 +22,23 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-# ── Dark theme CSS ────────────────────────────────────────────────────────────
-st.markdown("""
-<style>
-    .main { background-color: #0f1117; }
-    .stMetric { background-color: #1a1d2e; border-radius: 8px; padding: 12px; }
-    .stMetric label { color: #a0a0b0 !important; font-size: 0.8rem !important; }
-    .stMetric [data-testid="stMetricValue"] { color: #e0e0e0 !important; font-size: 1.6rem !important; }
-    .stMetric [data-testid="stMetricDelta"] { font-size: 0.85rem !important; }
-    h1, h2, h3 { color: #e0e0e0 !important; }
-    .sidebar .sidebar-content { background-color: #1a1d2e; }
-    div[data-testid="stSidebarContent"] { background-color: #1a1d2e; }
-    .stSelectbox label, .stMultiSelect label, .stSlider label { color: #a0a0b0 !important; }
-</style>
-""", unsafe_allow_html=True)
+# ── Matplotlib theme (colors come from .streamlit/config.toml) ───────────────
+BG      = st.get_option("theme.backgroundColor") or "#0B1020"
+SURFACE = st.get_option("theme.secondaryBackgroundColor") or "#121A2E"
+TEXT    = st.get_option("theme.textColor") or "#E6EAF2"
+EDGE    = st.get_option("theme.borderColor") or "#26304A"
+MUTED   = "#9AA6BF"
+GRID    = "#1C2540"
 
-# ── Matplotlib dark theme ─────────────────────────────────────────────────────
 plt.rcParams.update({
-    "figure.facecolor": "#0f1117",
-    "axes.facecolor":   "#1a1d2e",
-    "axes.edgecolor":   "#3a3d52",
-    "axes.labelcolor":  "#e0e0e0",
-    "xtick.color":      "#a0a0b0",
-    "ytick.color":      "#a0a0b0",
-    "text.color":       "#e0e0e0",
-    "grid.color":       "#2a2d3e",
+    "figure.facecolor": BG,
+    "axes.facecolor":   SURFACE,
+    "axes.edgecolor":   EDGE,
+    "axes.labelcolor":  TEXT,
+    "xtick.color":      MUTED,
+    "ytick.color":      MUTED,
+    "text.color":       TEXT,
+    "grid.color":       GRID,
     "grid.alpha":       0.5,
     "font.family":      "DejaVu Sans",
     "font.size":        10,
@@ -210,11 +202,7 @@ with st.sidebar:
     )
 
     st.markdown("---")
-    st.markdown(
-        "<div style='color:#666; font-size:0.75rem'>Data: Hyperliquid trades + "
-        "Alternative.me Fear/Greed Index</div>",
-        unsafe_allow_html=True,
-    )
+    st.caption("Data: Hyperliquid trades + Alternative.me Fear/Greed Index")
 
 # ── Apply filters ─────────────────────────────────────────────────────────────
 if len(date_range) == 2:
@@ -282,7 +270,7 @@ with tab1:
         fig, ax = plt.subplots(figsize=(7, 4.5))
         colors = [SENT_COLORS.get(s, "#aaa") for s in sent_agg_f["classification"]]
         bars = ax.bar(sent_agg_f["classification"], sent_agg_f["avg_pnl"],
-                      color=colors, edgecolor="#3a3d52", width=0.6)
+                      color=colors, edgecolor=EDGE, width=0.6)
         for bar, val in zip(bars, sent_agg_f["avg_pnl"]):
             ax.text(bar.get_x() + bar.get_width() / 2, bar.get_height() + 20,
                     f"${val:,.0f}", ha="center", fontsize=8)
@@ -302,12 +290,12 @@ with tab1:
                         color=[SENT_COLORS.get(s, "#aaa") for s in sent_agg_f["classification"]],
                         width=w, label="Win Rate", alpha=0.9)
         ax2b = ax.twinx()
-        ax2b.tick_params(colors="#e0e0e0")
-        ax2b.spines["right"].set_color("#3a3d52")
+        ax2b.tick_params(colors=TEXT)
+        ax2b.spines["right"].set_color(EDGE)
         ax2b.plot(x, sent_agg_f["long_ratio"], "w--o", linewidth=2,
                   markersize=6, label="Long Ratio")
         ax2b.axhline(0.5, color="#e74c3c", linestyle=":", alpha=0.6)
-        ax2b.set_ylabel("Long Ratio", color="#e0e0e0")
+        ax2b.set_ylabel("Long Ratio", color=TEXT)
         ax.set_xticks(x)
         ax.set_xticklabels(sent_agg_f["classification"], rotation=15, ha="right")
         ax.set_ylabel("Win Rate")
@@ -350,7 +338,7 @@ with tab2:
         ax = axes[0]
         bars = ax.bar(sent_agg_f["classification"], sent_agg_f["avg_trades"],
                       color=[SENT_COLORS.get(s, "#aaa") for s in sent_agg_f["classification"]],
-                      edgecolor="#3a3d52", width=0.6)
+                      edgecolor=EDGE, width=0.6)
         for bar, val in zip(bars, sent_agg_f["avg_trades"]):
             ax.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 0.5,
                     f"{val:.0f}", ha="center", fontsize=8)
@@ -363,7 +351,7 @@ with tab2:
         ax2 = axes[1]
         bars2 = ax2.bar(sent_agg_f["classification"], sent_agg_f["avg_size"],
                          color=[SENT_COLORS.get(s, "#aaa") for s in sent_agg_f["classification"]],
-                         edgecolor="#3a3d52", width=0.6)
+                         edgecolor=EDGE, width=0.6)
         for bar, val in zip(bars2, sent_agg_f["avg_size"]):
             ax2.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 10,
                      f"${val:,.0f}", ha="center", fontsize=8)
@@ -435,7 +423,7 @@ with tab3:
             offset = (i - n_sents / 2) * width + width / 2
             bars = ax.bar(x + offset, seg_sent[sent], width=width * 0.9,
                           color=SENT_COLORS.get(sent, "#aaa"),
-                          label=sent, edgecolor="#3a3d52")
+                          label=sent, edgecolor=EDGE)
         ax.set_xticks(x)
         ax.set_xticklabels(seg_list, rotation=10)
         ax.set_ylabel("Avg Daily PnL ($)")
@@ -452,7 +440,7 @@ with tab3:
         if not seg_sent.empty and seg_sent.shape[0] > 0 and seg_sent.shape[1] > 0:
             sns.heatmap(seg_sent.round(0), annot=True, fmt=".0f",
                         cmap="RdYlGn", ax=ax, linewidths=0.5,
-                        linecolor="#0f1117",
+                        linecolor=BG,
                         cbar_kws={"label": "Avg Daily PnL ($)"})
             ax.set_title(f"{seg_type} Heatmap")
             plt.setp(ax.get_xticklabels(), rotation=20)
@@ -580,7 +568,7 @@ with tab5:
         fig, ax = plt.subplots(figsize=(10, max(4, top_n * 0.35)))
         y = np.arange(len(lb_sorted))
         colors_bar = ["#2ecc71" if v > 0 else "#e74c3c" for v in lb_sorted["total_pnl"]]
-        ax.barh(y, lb_sorted["total_pnl"], color=colors_bar, edgecolor="#3a3d52")
+        ax.barh(y, lb_sorted["total_pnl"], color=colors_bar, edgecolor=EDGE)
         ax.set_yticks(y)
         ax.set_yticklabels(lb_sorted["wallet_short"], fontsize=8)
         ax.set_xlabel("Total PnL ($)")

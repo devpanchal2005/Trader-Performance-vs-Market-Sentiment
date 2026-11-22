@@ -10,7 +10,6 @@
 
 - [Overview](#overview)
 - [Project Structure](#project-structure)
-- [Setup & How to Run](#setup--how-to-run)
 - [Datasets](#datasets)
 - [Methodology](#methodology)
 - [Key Insights](#key-insights)
@@ -55,39 +54,6 @@ Trader-Performance-vs-Market-Sentiment/
 
 ---
 
-## Setup & How to Run
-
-```bash
-# 1. Clone
-git clone https://github.com/devpanchal2005/Trader-Performance-vs-Market-Sentiment.git
-cd Trader-Performance-vs-Market-Sentiment
-
-# 2. (Recommended) virtual environment
-python -m venv .venv
-source .venv/bin/activate        # Windows: .venv\Scripts\activate
-
-# 3. Install dependencies
-pip install -r requirements.txt
-pip install jupyter              # to run the notebooks
-```
-
-**Run the notebooks** (from the `notebooks/` folder, so charts save to `../charts/`):
-
-```bash
-cd notebooks
-jupyter notebook analysis_notebook.ipynb
-```
-
-Use `Kernel → Restart & Run All`. Then run `bonus_predictive_model.ipynb` and `bonus_clustering.ipynb` the same way.
-
-**Launch the dashboard** (from the project root):
-
-```bash
-streamlit run dashboard.py       # opens http://localhost:8501
-```
-
----
-
 ## Datasets
 
 | File | Description | Key columns |
@@ -113,9 +79,9 @@ Both files are included in `data/`.
 
 ### Analysis (Part B)
 
-1. **PnL & win rate by sentiment** — Distribution plots + Mann-Whitney U test comparing Fear vs Greed days.
-2. **Behavioral shifts** — Trade frequency, position size, long/short ratio aggregated by sentiment class.
-3. **Continuous correlation** — Scatter of sentiment index value vs key metrics with linear regression.
+1. **PnL & win rate by sentiment** - Distribution plots + Mann-Whitney U test comparing Fear vs Greed days.
+2. **Behavioral shifts** - Trade frequency, position size, long/short ratio aggregated by sentiment class.
+3. **Continuous correlation** - Scatter of sentiment index value vs key metrics with linear regression.
 
 ### Segmentation (Part C)
 
@@ -129,40 +95,40 @@ Both files are included in `data/`.
 
 ## Key Insights
 
-### Insight 1 — Fear Days Boost Profitability, Not Suppress It
+### Insight 1: Fear Days Boost Profitability, Not Suppress It
 Average daily PnL is measurably **higher** on Fear and Extreme Fear days than on Greed days. Fear generates the highest avg daily PnL (~$5,300), while Greed is the weakest regime (~$3,300). Win rates are relatively stable across regimes (~60–68%), so the gap is driven by trade size and edge quality, not win frequency.
 
-### Insight 2 — Traders Go More Long During Fear (Not Greed) — and It Pays Off
-The long ratio peaks during Fear periods (Extreme Fear: 0.53, Fear: 0.52) and drops to 0.47 across Neutral, Greed, and Extreme Greed alike. Far from being punished, this long bias during fear is directionally correct — Fear days are the highest-PnL regime. The crowd is not chasing momentum late; it is actually positioned well when it feels worst.
+### Insight 2: Traders Go More Long During Fear (Not Greed) - and It Pays Off
+The long ratio peaks during Fear periods (Extreme Fear: 0.53, Fear: 0.52) and drops to 0.47 across Neutral, Greed, and Extreme Greed alike. Far from being punished, this long bias during fear is directionally correct - Fear days are the highest-PnL regime. The crowd is not chasing momentum late; it is actually positioned well when it feels worst.
 
-### Insight 3 — High-Size Traders Thrive in Extreme Fear, Not Struggle
-High-Size traders show the sharpest PnL delta between Fear and Greed days, but in the direction opposite to what intuition suggests. Their win rate is highest under Extreme Fear (0.66) and lowest under Greed (0.46). Larger positions amplify gains — not just drawdowns — when sentiment is fearful and volatility creates opportunity.
+### Insight 3: High-Size Traders Thrive in Extreme Fear, Not Struggle
+High-Size traders show the sharpest PnL delta between Fear and Greed days, but in the direction opposite to what intuition suggests. Their win rate is highest under Extreme Fear (0.66) and lowest under Greed (0.46). Larger positions amplify gains - not just drawdowns - when sentiment is fearful and volatility creates opportunity.
 
-### Insight 4 — Frequent Traders Lead During Fear, Not Across All Regimes Equally
-Frequent traders do not maintain flat PnL across sentiment regimes. Chart 4 shows they earn substantially more on Fear days (~$8,000) than Greed (~$5,000) or Neutral (~$4,000) days. Their advantage is most pronounced precisely when sentiment is most negative — likely because higher trade throughput captures more of the fear-driven price dislocations.
+### Insight 4: Frequent Traders Lead During Fear, Not Across All Regimes Equally
+Frequent traders do not maintain flat PnL across sentiment regimes. Chart 4 shows they earn substantially more on Fear days (~$8,000) than Greed (~$5,000) or Neutral (~$4,000) days. Their advantage is most pronounced precisely when sentiment is most negative - likely because higher trade throughput captures more of the fear-driven price dislocations.
 
-### Insight 5 — Long Bias Falls as the Fear/Greed Index Rises
-The time-series and scatter charts show the long ratio and the Fear/Greed index move in **opposite** directions (r=-0.066, p=0.001). As the index rises toward Greed, traders rotate net short (0.47). Since Fear days are the highest-PnL regime, this means traders are reducing long exposure precisely when long exposure has historically been most rewarded — a systematic behavioural misalignment.
+### Insight 5: Long Bias Falls as the Fear/Greed Index Rises
+The time-series and scatter charts show the long ratio and the Fear/Greed index move in **opposite** directions (r=-0.066, p=0.001). As the index rises toward Greed, traders rotate net short (0.47). Since Fear days are the highest-PnL regime, this means traders are reducing long exposure precisely when long exposure has historically been most rewarded - a systematic behavioural misalignment.
 
 ---
 
 ## Strategy Recommendations
 
-### Strategy 1 — Sentiment-Gated Size Rule
-> **"When the Fear/Greed index drops below 40 (Fear zone), High-Size traders should maintain or increase position size — not reduce it."**
+### Strategy 1: Sentiment-Gated Size Rule
+> **"When the Fear/Greed index drops below 40 (Fear zone), High-Size traders should maintain or increase position size - not reduce it."**
 
 - Evidence: Chart 4 shows High-Size segment PnL is most positive on Fear days (~$9,600) and weakest on Greed days (~$3,100). Chart 5 confirms their win rate peaks at 0.66 during Extreme Fear.
 - Rationale: Fear-driven volatility creates pricing dislocations that larger positions are well-placed to exploit. The instinct to de-risk during fear directly works against this edge.
 - Note: This applies to High-Size traders only. Low-Size traders show the opposite pattern (better performance on Greed days, ~$4,400 vs ~$2,400) and should not apply this rule.
 
-### Strategy 2 — Reduce Long Exposure During Greed, Not Fear
-> **"When the Fear/Greed index exceeds 60 (Greed zone), reduce overall activity and resist the urge to go net short — instead, simply scale back size and frequency."**
+### Strategy 2: Reduce Long Exposure During Greed, Not Fear
+> **"When the Fear/Greed index exceeds 60 (Greed zone), reduce overall activity and resist the urge to go net short - instead, simply scale back size and frequency."**
 
-- Evidence: Chart 2 shows experienced traders already pull back organically during Greed — trade frequency falls from 133.75/day (Extreme Fear) to 76.03/day (Extreme Greed), and avg trade size drops from $8,976 to $5,372. Chart 1 confirms aggregate PnL is weakest in this regime.
-- Rationale: Greed is a low-opportunity environment. The correct response is reduced activity, not contrarian shorting — Chart 3 shows the long ratio correlation with the index is real but very small (r=-0.066), so flipping aggressively short is not supported by the data.
+- Evidence: Chart 2 shows experienced traders already pull back organically during Greed - trade frequency falls from 133.75/day (Extreme Fear) to 76.03/day (Extreme Greed), and avg trade size drops from $8,976 to $5,372. Chart 1 confirms aggregate PnL is weakest in this regime.
+- Rationale: Greed is a low-opportunity environment. The correct response is reduced activity, not contrarian shorting - Chart 3 shows the long ratio correlation with the index is real but very small (r=-0.066), so flipping aggressively short is not supported by the data.
 
 ### Rule of Thumb for Frequent Traders
-> **"Increase trade frequency during Fear regimes (index below 40) and reduce it during Greed — do not treat all sentiment regimes as equivalent."**
+> **"Increase trade frequency during Fear regimes (index below 40) and reduce it during Greed - do not treat all sentiment regimes as equivalent."**
 
 - Evidence: Chart 4 shows Frequent traders earn ~$8,000 on Fear days versus ~$5,000 on Greed days. The gap is substantial and consistent. Frequent trading during Greed still outperforms Infrequent traders (~$3,500), but the Fear regime is where high-frequency throughput generates its strongest edge.
 
@@ -186,9 +152,9 @@ The time-series and scatter charts show the long ratio and the Fear/Greed index 
 
 Full details are in [BONUS_README.md](BONUS_README.md). Summary:
 
-- **Predictive model** — Logistic Regression, Gradient Boosting and Random Forest (5-fold CV, best by AUC-ROC) predict next-day profitability, plus a regressor for next-day |PnL|. Behavioral momentum (rolling win rate, today's PnL, profit streak) is the strongest signal; sentiment adds roughly 5-10% AUC lift.
-- **Clustering** — K-Means on 8 behavioral features yields trader archetypes (Precision Snipers, High-Frequency Scalpers, Size Traders, Sentiment Followers, Passive Accumulators); results are in `data/trader_archetypes.csv` and `data/archetype_summary.csv`.
-- **Dashboard** — Streamlit app with tabs for sentiment vs performance, behavior, trader segments, time series and a leaderboard, with sentiment/date/segment filters.
+- **Predictive model** - Logistic Regression, Gradient Boosting and Random Forest (5-fold CV, best by AUC-ROC) predict next-day profitability, plus a regressor for next-day |PnL|. Behavioral momentum (rolling win rate, today's PnL, profit streak) is the strongest signal; sentiment adds roughly 5-10% AUC lift.
+- **Clustering** - K-Means on 8 behavioral features yields trader archetypes (Precision Snipers, High-Frequency Scalpers, Size Traders, Sentiment Followers, Passive Accumulators); results are in `data/trader_archetypes.csv` and `data/archetype_summary.csv`.
+- **Dashboard** - Streamlit app with tabs for sentiment vs performance, behavior, trader segments, time series and a leaderboard, with sentiment/date/segment filters.
 
 ---
 
