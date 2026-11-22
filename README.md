@@ -1,25 +1,55 @@
-# Hyperliquid × Fear/Greed Sentiment Analysis
+# Trader Performance vs Market Sentiment
 
-> Analyzing how Bitcoin market sentiment drives trader behavior and performance on Hyperliquid.
+> How does Bitcoin market sentiment (Fear/Greed Index) shape trader behavior and performance on Hyperliquid? Analysis, trader segmentation, a predictive model, behavioral clustering, and an interactive Streamlit dashboard.
+
+![Python](https://img.shields.io/badge/python-3.9%2B-blue) ![Streamlit](https://img.shields.io/badge/dashboard-streamlit-ff4b4b) ![Status](https://img.shields.io/badge/status-complete-brightgreen)
+
+---
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Project Structure](#project-structure)
+- [Setup & How to Run](#setup--how-to-run)
+- [Datasets](#datasets)
+- [Methodology](#methodology)
+- [Key Insights](#key-insights)
+- [Strategy Recommendations](#strategy-recommendations)
+- [Bonus Work](#bonus-work)
+- [Charts Overview](#charts-overview)
+
+---
+
+## Overview
+
+| Part | Goal | Where |
+|------|------|-------|
+| **A. Data preparation** | Clean, align and merge trades with daily sentiment | `notebooks/analysis_notebook.ipynb` |
+| **B. Analysis** | PnL, win rate, behavior and correlation vs sentiment | `notebooks/analysis_notebook.ipynb` |
+| **C. Segmentation** | Size, frequency and consistency segments across regimes | `notebooks/analysis_notebook.ipynb` |
+| **Bonus 1** | Predict next-day profitability and PnL volatility | `notebooks/bonus_predictive_model.ipynb` |
+| **Bonus 2** | K-Means trader archetypes | `notebooks/bonus_clustering.ipynb` |
+| **Bonus 3** | Interactive dashboard | `dashboard.py` |
 
 ---
 
 ## Project Structure
 
 ```
-hyperliquid-sentiment/
+Trader-Performance-vs-Market-Sentiment/
 ├── data/
-│   ├── fear_greed_index.csv        ← Bitcoin Fear/Greed Index
-│   └── historical_data.csv         ← Hyperliquid trade history
+│   ├── fear_greed_index.csv        # Bitcoin Fear/Greed Index (daily)
+│   ├── historical_data.csv         # Hyperliquid trade history
+│   ├── trader_archetypes.csv       # Per-trader features + cluster labels (output)
+│   └── archetype_summary.csv       # Per-archetype aggregates (output)
 ├── notebooks/
-│   └── analysis.ipynb              ← Main analysis notebook
-├── charts/                         ← Auto-generated output charts
-│   ├── chart1_pnl_by_sentiment.png
-│   ├── chart2_behavior_by_sentiment.png
-│   ├── chart3_sentiment_scatter.png
-│   ├── chart4_segment_x_sentiment.png
-│   ├── chart5_longbias_heatmap.png
-│   └── chart6_timeseries.png
+│   ├── analysis_notebook.ipynb     # Main analysis (Parts A/B/C)
+│   ├── bonus_predictive_model.ipynb# Bonus 1: ML model
+│   └── bonus_clustering.ipynb      # Bonus 2: clustering
+├── charts/                         # All generated charts (PNG)
+├── dashboard.py                    # Bonus 3: Streamlit app
+├── requirements.txt
+├── BONUS_README.md                 # Detailed notes on the bonus work
 └── README.md
 ```
 
@@ -27,27 +57,45 @@ hyperliquid-sentiment/
 
 ## Setup & How to Run
 
-### 1. Install dependencies
-
 ```bash
-pip install pandas numpy matplotlib seaborn scipy jupyter
+# 1. Clone
+git clone https://github.com/devpanchal2005/Trader-Performance-vs-Market-Sentiment.git
+cd Trader-Performance-vs-Market-Sentiment
+
+# 2. (Recommended) virtual environment
+python -m venv .venv
+source .venv/bin/activate        # Windows: .venv\Scripts\activate
+
+# 3. Install dependencies
+pip install -r requirements.txt
+pip install jupyter              # to run the notebooks
 ```
 
-### 2. Place data files
-
-Put your two CSV files in the `data/` folder:
-- `data/fear_greed_index.csv`
-- `data/historical_data.csv`
-
-### 3. Run the notebook
+**Run the notebooks** (from the `notebooks/` folder, so charts save to `../charts/`):
 
 ```bash
 cd notebooks
-jupyter notebook analysis.ipynb
+jupyter notebook analysis_notebook.ipynb
 ```
 
-Run all cells top-to-bottom (`Kernel → Restart & Run All`).  
-Charts save automatically to `../charts/`.
+Use `Kernel → Restart & Run All`. Then run `bonus_predictive_model.ipynb` and `bonus_clustering.ipynb` the same way.
+
+**Launch the dashboard** (from the project root):
+
+```bash
+streamlit run dashboard.py       # opens http://localhost:8501
+```
+
+---
+
+## Datasets
+
+| File | Description | Key columns |
+|------|-------------|-------------|
+| `data/fear_greed_index.csv` | Daily Bitcoin Fear/Greed Index | `date`, `value` (0-100), `classification` |
+| `data/historical_data.csv` | Hyperliquid trade-level history | `Account`, `Coin`, `Size USD`, `Side`, `Closed PnL`, `Fee`, `Timestamp IST` |
+
+Both files are included in `data/`.
 
 ---
 
@@ -130,3 +178,20 @@ The time-series and scatter charts show the long ratio and the Fear/Greed index 
 | `chart4_segment_x_sentiment` | Grouped bars: segment PnL under Fear / Neutral / Greed |
 | `chart5_longbias_heatmap` | Long ratio by sentiment + win-rate heatmap (segment × sentiment) |
 | `chart6_timeseries` | Time-series: daily aggregate PnL (colored by sentiment) vs index |
+| `bonus_*` | Model comparison, feature importance, cluster/PCA/radar plots, archetype × sentiment heatmap (see below) |
+
+---
+
+## Bonus Work
+
+Full details are in [BONUS_README.md](BONUS_README.md). Summary:
+
+- **Predictive model** — Logistic Regression, Gradient Boosting and Random Forest (5-fold CV, best by AUC-ROC) predict next-day profitability, plus a regressor for next-day |PnL|. Behavioral momentum (rolling win rate, today's PnL, profit streak) is the strongest signal; sentiment adds roughly 5-10% AUC lift.
+- **Clustering** — K-Means on 8 behavioral features yields trader archetypes (Precision Snipers, High-Frequency Scalpers, Size Traders, Sentiment Followers, Passive Accumulators); results are in `data/trader_archetypes.csv` and `data/archetype_summary.csv`.
+- **Dashboard** — Streamlit app with tabs for sentiment vs performance, behavior, trader segments, time series and a leaderboard, with sentiment/date/segment filters.
+
+---
+
+## Tech Stack
+
+Python · pandas · NumPy · SciPy · scikit-learn · Matplotlib · Seaborn · Streamlit · Jupyter
